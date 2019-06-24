@@ -4,7 +4,7 @@ import os
 f = open("test123456.txt", "wb")
 
 BUFSIZE = 2048
-server_ip_port = ("192.168.1.102", 8080)
+server_ip_port = ("192.168.1.101", 8080)
 client_ip_port = ("192.168.1.100", 8080)
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_ip_port)
@@ -49,25 +49,33 @@ msg_ask_data += chr(0x01)
 msg_ask_data += chr(0x00)
 msg_ask_data += chr(0x00)
 
+
 # 1 shake hand
-print(server.sendto(msg_shake_hand.encode(), client_ip_port))
+server.sendto(msg_shake_hand.encode(), client_ip_port)
+
+# receive shake hand message
+count = 0
+for i in range(4):
+# while True:
+    data, client_addr = server.recvfrom(BUFSIZE)
+    count += 1
+    print(count)
 
 # 2 ask data
 count = 0
 server.sendto(msg_ask_data.encode(), client_ip_port)
-temp_data = None
 while True:
     data, client_addr = server.recvfrom(BUFSIZE)
-    print("data:", data)
-    print(count)
-    if temp_data == None:
-        temp_data = data
-    else:
-        temp_data += data
-    
-    # server.sendto(msg_ask_data.encode(), client_ip_port)
-
+    print("data:", len(data))
     count += 1
-    if count == 150:
-        f.write(temp_data)
+    print(count)
+    if count % 128 <= 64 and count % 128 > 0:
+        f.write(data)
+    # else:
+    #     temp_data += data
+    server.sendto(msg_ask_data.encode(), client_ip_port)
+    # if count % 128 == 0:
+    #     server.sendto(msg_ask_data.encode(), client_ip_port)
+
+    if count > 500:
         break
