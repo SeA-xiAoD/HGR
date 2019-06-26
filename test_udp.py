@@ -79,3 +79,5 @@ while True:
 
     if count > 500:
         break
+
+f.close()
