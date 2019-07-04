@@ -1,6 +1,9 @@
 import socket
 import os
 import binascii
+from process_data import processing_data
+import numpy as np
+from matplotlib import pyplot as plt
 
 f = open("test_switch0703.txt", "wb")
 
@@ -20,19 +23,40 @@ msg_end_sending = "\x28\x00\x01\x00\x02\x00\xA0\x35\x00\x01\x02\x00\x00\x00\x01\
 print(server.sendto(msg_start_sending.encode("latin-1"), client_ip_port)) # latin-1 can avoid \xc2
 
 # receive cache packages
-for i in range(128):
+for i in range(64):
     data, client_addr = server.recvfrom(BUFSIZE)
     print(i)
 
 # receive data
 count = 0
+
+data_buffer = None
 while True:
     data, client_addr = server.recvfrom(BUFSIZE)
     count += 1
     print(count)
-    f.write(data)
-    if count >= 64:
-        server.sendto(msg_end_sending.encode("latin-1"), client_ip_port)
-        break
+
+    if data_buffer is None:
+        data_buffer = data
+    else:
+        data_buffer += data
+
+    if count % 64 == 0:
+        data_4_display = processing_data(data_buffer)
+        x = np.arange(1, data_4_display.shape[1] +1)
+        plt.ion()
+        plt.clf()
+        plt.title("test")
+        for i in range(8):
+            plt.xlabel("samples")
+            plt.ylabel("Voltage /V")
+            plt.subplot(4, 2, i+1)
+            plt.ylim([0, 5.0])
+            plt.plot(x, data_4_display[i])
+            plt.title("ch" + str(i + 1))
+            plt.tight_layout(1)
+        plt.pause(0.001)
+        data_buffer = None
+        count = 0
     
 f.close()
