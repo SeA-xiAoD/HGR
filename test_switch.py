@@ -22,7 +22,7 @@ print(server.sendto(msg_start_sending.encode("latin-1"), client_ip_port)) # lati
 # receive cache packages
 for i in range(128):
     data, client_addr = server.recvfrom(BUFSIZE)
-    print(i)s
+    print(i)
 
 # receive data
 count = 0
