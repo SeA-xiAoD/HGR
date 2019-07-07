@@ -19,7 +19,7 @@ def processing_data(raw_data):
 
 if __name__ == "__main__":
 
-    f = open("/Users/duanhaihan/Desktop/HAR/HGR/test_switch0703.txt", "rb")
+    f = open("test_switch0703.txt", "rb")
     data = f.read()
     data = processing_data(data)
     x = np.arange(1, data.shape[1] +1)
