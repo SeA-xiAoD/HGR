@@ -24,6 +24,7 @@ for i in range(128):
 # receive data
 package_count = 0
 frame_count = 0
+temp_data = None
 while True:
     data, client_addr = server.recvfrom(BUFSIZE)
     package_count += 1
@@ -35,14 +36,14 @@ while True:
     
     if package_count % 64 == 0:
         package_count = 0
-        f = open(os.path.join("data/0", str(frame_count) + ".txt"), "wb")
+        f = open(os.path.join("../data_0707/6", str(frame_count) + ".txt"), "wb")
         f.write(temp_data)
         f.close()
         temp_data = None
         frame_count += 1
         print(frame_count)
 
-    if frame_count == 30:
+    if frame_count == 20:
         server.sendto(msg_end_sending.encode("latin-1"), client_ip_port)
         break
     

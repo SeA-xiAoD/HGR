@@ -19,15 +19,18 @@ def processing_data(raw_data):
 
 if __name__ == "__main__":
 
-    f = open("test_switch0703.txt", "rb")
+    filename = "../data_0707/6/"
+    number = input()
+    filename = filename + number + ".txt"
+    f = open(filename, "rb")
     data = f.read()
     data = processing_data(data)
     x = np.arange(1, data.shape[1] +1)
     for i in range(8):
         plt.xlabel("samples")
         plt.ylabel("Voltage /V")
-        plt.ylim([0, 5.0])
         plt.subplot(4, 2, i+1)
+        plt.ylim([0, 3.0])
         plt.plot(x, data[i])
         plt.title("ch" + str(i + 1))
         plt.tight_layout(1)
