@@ -3,6 +3,7 @@ from keras.models import Input, Model
 from keras.layers import LSTM, SimpleRNN, Dense
 from keras.utils import to_categorical
 from keras.optimizers import Adam
+from keras.losses import categorical_crossentropy
 import numpy as np
 import time
 import os
@@ -49,12 +50,14 @@ data_y = to_categorical(data_y, 7)
 print(data_y.shape)
 
 
-# training
+# build rnn
 input_layer = Input([256, 8])
 # m = SimpleRNN(100)(input_layer)
 m = LSTM(10)(input_layer)
 m = Dense(7, activation = "softmax")(m)
 model = Model(input_layer, m)
-optimizer = Adam(lr=1e-5)
-model.compile("adam", "categorical_crossentropy", metrics=["acc"])
+
+# training
+optimizer = Adam(lr=1e-3)
+model.compile(optimizer, categorical_crossentropy, metrics=["acc"])
 model.fit(data_x, data_y, epochs=50, validation_split=0.2)
