@@ -19,7 +19,7 @@ def processing_data(raw_data):
 
 if __name__ == "__main__":
 
-    filename = "../data_0707/6/"
+    filename = "../data_0707/0/"
     number = input()
     filename = filename + number + ".txt"
     f = open(filename, "rb")
