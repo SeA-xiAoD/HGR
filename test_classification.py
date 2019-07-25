@@ -8,9 +8,10 @@ import numpy as np
 import time
 import os
 from process_data import processing_data
+from keras.callbacks import TensorBoard
 
 # load labels
-data_dir = "../data_0707/"
+data_dir = "../data_0717_miao/"
 dir_list = os.listdir(data_dir)
 dir_list = sorted(dir_list)
 labels = []
@@ -21,8 +22,7 @@ print(labels)
 
 # load data
 data_x = None
-data_y = None
-labels = ["0","6"]
+data_y = None                                          
 for label in labels:
     
     data_files = []
@@ -35,6 +35,8 @@ for label in labels:
     for file_name in data_files:
         f = open(os.path.join(data_dir, label, file_name), "rb")
         temp_data = f.read()
+        # print(file_name)
+        # print(temp_data)
         temp_data = processing_data(temp_data).T
         temp_data = np.reshape(temp_data, [-1, 256,8])
         
@@ -49,6 +51,13 @@ print(data_x.shape)
 data_y = to_categorical(data_y, 7)
 print(data_y.shape)
 
+total_data_count = data_x.shape[0]
+indexs = np.arange(total_data_count)
+np.random.seed(10)
+np.random.shuffle(indexs)
+print(indexs)
+data_x = data_x[indexs]
+data_y = data_y[indexs]
 
 # build rnn
 input_layer = Input([256, 8])
@@ -58,6 +67,7 @@ m = Dense(7, activation = "softmax")(m)
 model = Model(input_layer, m)
 
 # training
-optimizer = Adam(lr=1e-3)
+optimizer = Adam(lr=3e-4)
 model.compile(optimizer, categorical_crossentropy, metrics=["acc"])
-model.fit(data_x, data_y, epochs=50, validation_split=0.2)
+tensorboard = TensorBoard()
+model.fit(data_x, data_y, batch_size=128, epochs=200, validation_split=0.2, callbacks=[tensorboard])
