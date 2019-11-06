@@ -5,10 +5,8 @@ from process_data import processing_data
 import numpy as np
 from matplotlib import pyplot as plt
 
-f = open("../data_0707/0/0.txt", "wb")
-
 BUFSIZE = 2048
-server_ip_port = ("192.168.1.101", 8080)
+server_ip_port = ("192.168.1.102", 8080)
 client_ip_port = ("192.168.1.100", 8080)
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server.bind(server_ip_port)
@@ -55,5 +53,3 @@ while True:
         package_count = 0
         frame_count += 1
         print(frame_count)
-    
-f.close()

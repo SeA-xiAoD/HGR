@@ -1,6 +1,5 @@
 import socket
 import os
-import binascii
 
 f = open("test_switch0703.txt", "wb")
 
